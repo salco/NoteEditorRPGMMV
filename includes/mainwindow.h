@@ -20,7 +20,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    void setTestText(std::string text);
+    void setProjectPath(std::string text);
 
 private:
     Ui::MainWindow *ui;
