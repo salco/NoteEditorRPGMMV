@@ -5,6 +5,7 @@
 
 #include <QPainter>
 #include <QTextBlock>
+#include <QFileSystemModel>
 
 #include <string>
 
@@ -23,5 +24,6 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    QFileSystemModel fileSystemModel;
 };
 

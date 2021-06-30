@@ -68,11 +68,12 @@ int main(int argv, char **args)
     MainWindow mainWindow;
     mainWindow.setTestText(argumentConcat);
 
+    //mainWindow.setTestText("E:\\EpicGame\\Projects\\Project1\\Game.rpgproject");
     mainWindow.show();
 
     CodeEditor editor;
     editor.setWindowTitle(QObject::tr("Code Editor Example"));
-    editor.show();
+//    editor.show();
 
     return app.exec();
 }
