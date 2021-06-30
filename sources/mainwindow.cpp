@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 //        fileSystemModel.setOption(QFileSystemModel::DontUseCustomDirectoryIcons);
 //        fileSystemModel.setOption(QFileSystemModel::DontWatchForChanges);
-    ui->treeView->setModel(&fileSystemModel);
+    fileSystemModel.setNameFilters({"*.json"});
 }
 
 MainWindow::~MainWindow()
@@ -25,10 +25,9 @@ void MainWindow::setTestText(std::string text)
     char *p = strrchr(text.c_str(), '\\');
     if(p) p[0] = 0;
 
-   ui->textEdit->setPlaceholderText(text.c_str());
-//    ui->textEdit->setPlainText(text.c_str());
+    ui->textEdit->setPlainText(text.c_str());
 
-    fileSystemModel.setRootPath(ui->textEdit->toPlainText());
-    //ui->treeView->setModel(&fileSystemModel);
-    ui->treeView->update();
+    fileSystemModel.setRootPath((ui->textEdit->toPlainText()));
+    ui->treeView->setModel(&fileSystemModel);
+    ui->treeView->setRootIndex(fileSystemModel.index((ui->textEdit->toPlainText())));
 }
