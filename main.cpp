@@ -50,7 +50,7 @@
 
 #include <QApplication>
 
-#include "codeeditor.h"
+#include "includes/codeeditor.h"
 
 int main(int argv, char **args)
 {

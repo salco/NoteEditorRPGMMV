@@ -48,7 +48,7 @@
 **
 ****************************************************************************/
 
-#include "codeeditor.h"
+#include "includes/codeeditor.h"
 
 #include <QPainter>
 #include <QTextBlock>
