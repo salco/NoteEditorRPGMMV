@@ -1,7 +1,7 @@
 # Generated from codeeditor.pro.
 
 cmake_minimum_required(VERSION 3.14)
-project(codeeditor LANGUAGES CXX)
+project(WindowBuilder LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -15,25 +15,46 @@ endif()
 
 set(INSTALL_EXAMPLEDIR "${INSTALL_EXAMPLESDIR}/widgets/widgets/codeeditor")
 
-find_package(Qt6 COMPONENTS Core)
-find_package(Qt6 COMPONENTS Gui)
-find_package(Qt6 COMPONENTS Widgets)
 
-qt_add_executable(codeeditor
-    codeeditor.cpp codeeditor.h
+set(QT_VERSION 6)
+set(REQUIRED_LIBS Core Gui Widgets)
+unset(REQUIRED_LIBS_QUALIFIED)
+
+foreach (QT_LIB ${REQUIRED_LIBS})
+    list(APPEND REQUIRED_LIBS_QUALIFIED Qt${QT_VERSION}::${QT_LIB})
+endforeach()
+
+
+# Include Qt libraries
+find_package(Qt${QT_VERSION} COMPONENTS
+  ${REQUIRED_LIBS}
+  REQUIRED
+  )
+
+
+qt_add_executable(${PROJECT_NAME}
+    sources/codeeditor.cpp
+    includes/codeeditor.h
     main.cpp
 )
-set_target_properties(codeeditor PROPERTIES
+
+target_include_directories(${PROJECT_NAME}
+    PUBLIC
+    includes
+    )
+
+set_target_properties(${PROJECT_NAME} PROPERTIES
     WIN32_EXECUTABLE TRUE
     MACOSX_BUNDLE TRUE
 )
-target_link_libraries(codeeditor PUBLIC
+
+target_link_libraries(${PROJECT_NAME} PUBLIC
     Qt::Core
     Qt::Gui
     Qt::Widgets
 )
 
-install(TARGETS codeeditor
+install(TARGETS ${PROJECT_NAME}
     RUNTIME DESTINATION "${INSTALL_EXAMPLEDIR}"
     BUNDLE DESTINATION "${INSTALL_EXAMPLEDIR}"
     LIBRARY DESTINATION "${INSTALL_EXAMPLEDIR}"
