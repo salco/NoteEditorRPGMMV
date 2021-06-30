@@ -16,6 +16,11 @@ endif()
 set(INSTALL_EXAMPLEDIR "${INSTALL_EXAMPLESDIR}/widgets/widgets/codeeditor")
 
 
+set(${PROJECT_NAME}_UI "" CACHE INTERNAL "list of all ui files to include in project" FORCE)
+list(APPEND ${PROJECT_NAME}_UI
+    ui/mainwindow.ui
+    )
+
 set(QT_VERSION 6)
 set(REQUIRED_LIBS Core Gui Widgets)
 unset(REQUIRED_LIBS_QUALIFIED)
@@ -31,16 +36,21 @@ find_package(Qt${QT_VERSION} COMPONENTS
   REQUIRED
   )
 
+qt_wrap_ui(${${PROJECT_NAME}_UI} ${${PROJECT_NAME}_UI})
 
 qt_add_executable(${PROJECT_NAME}
     sources/codeeditor.cpp
     includes/codeeditor.h
+    sources/mainwindow.cpp
+    includes/mainwindow.h
+    ${${PROJECT_NAME}_UI}
     main.cpp
 )
 
+
 target_include_directories(${PROJECT_NAME}
     PUBLIC
-    includes
+    ${CMAKE_CURRENT_SOURCE_DIR}/includes
     )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
@@ -49,9 +59,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
-    Qt::Core
-    Qt::Gui
-    Qt::Widgets
+    ${REQUIRED_LIBS_QUALIFIED}
 )
 
 install(TARGETS ${PROJECT_NAME}
