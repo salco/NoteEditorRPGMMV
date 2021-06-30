@@ -25,5 +25,7 @@ public:
 private:
     Ui::MainWindow *ui;
     QFileSystemModel fileSystemModel;
+
+    bool extractData(std::string fullPath);
 };
 
