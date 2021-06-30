@@ -7,7 +7,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
-set(CMAKE_AUTOUIC ON)
+#set(CMAKE_AUTOUIC ON)
 
 if(NOT DEFINED INSTALL_EXAMPLESDIR)
   set(INSTALL_EXAMPLESDIR "examples")
@@ -51,6 +51,7 @@ qt_add_executable(${PROJECT_NAME}
 target_include_directories(${PROJECT_NAME}
     PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/includes
+    ${CMAKE_BINARY_DIR}
     )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES

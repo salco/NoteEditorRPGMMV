@@ -14,24 +14,14 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPlainTextEdit" name="CodeEditor">
+   <widget class="CodeEditor" name="plainTextEdit">
     <property name="geometry">
      <rect>
-      <x>140</x>
-      <y>80</y>
+      <x>250</x>
+      <y>250</y>
       <width>104</width>
       <height>71</height>
      </rect>
-    </property>
-    <property name="lineWrapMode">
-     <enum>QPlainTextEdit::NoWrap</enum>
-    </property>
-    <property name="plainText">
-     <string>bb
-ddd
-aaa
-
- gg</string>
     </property>
    </widget>
   </widget>
@@ -47,6 +37,13 @@ aaa
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CodeEditor</class>
+   <extends>QPlainTextEdit</extends>
+   <header>codeeditor.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
