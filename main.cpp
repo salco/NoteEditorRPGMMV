@@ -68,10 +68,10 @@ int main(int argv, char **args)
     }
 
     MainWindow mainWindow;
-    //mainWindow.setTestText( getPath(argumentConcat) );
+    //mainWindow.setProjectPath( getPath(argumentConcat) );
 
 
-    mainWindow.setTestText("E:\\EpicGame\\Projects\\Project1");
+    mainWindow.setProjectPath("E:\\EpicGame\\Projects\\Project1");
     mainWindow.show();
 
     CodeEditor editor;
