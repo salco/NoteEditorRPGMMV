@@ -26,6 +26,9 @@ private:
     Ui::MainWindow *ui;
     QFileSystemModel fileSystemModel;
 
+    static const char* const databaseCategorie[] ;
+    static const char* const databaseDynamicCategorie[] ;
+
     bool extractData(std::string fullPath);
 };
 
