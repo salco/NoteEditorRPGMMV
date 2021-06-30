@@ -52,12 +52,21 @@
 
 #include "includes/codeeditor.h"
 #include "includes/mainwindow.h"
+#include <string>
 
 int main(int argv, char **args)
 {
     QApplication app(argv, args);
+    std::string argumentConcat;
+
+
+    for (int i = 1; i < argv; ++i)
+    {
+         argumentConcat.append(args[i] );
+    }
 
     MainWindow mainWindow;
+    mainWindow.setTestText(argumentConcat);
 
     mainWindow.show();
 

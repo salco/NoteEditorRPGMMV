@@ -12,3 +12,8 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
+
+void MainWindow::setTestText(std::string text)
+{
+    ui->textEdit->setPlaceholderText(text.c_str());
+}

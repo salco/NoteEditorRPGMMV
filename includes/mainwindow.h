@@ -6,6 +6,8 @@
 #include <QPainter>
 #include <QTextBlock>
 
+#include <string>
+
 namespace Ui {
 class MainWindow;
 }
@@ -17,6 +19,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    void setTestText(std::string text);
 
 private:
     Ui::MainWindow *ui;
