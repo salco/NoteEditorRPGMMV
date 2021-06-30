@@ -20,10 +20,9 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::setTestText(std::string text)
+void MainWindow::setProjectPath(std::string text)
 {
-    char *p = strrchr(text.c_str(), '\\');
-    if(p) p[0] = 0;
+
 
     ui->textEdit->setPlainText(text.c_str());
 

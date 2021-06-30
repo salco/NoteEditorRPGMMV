@@ -54,6 +54,8 @@
 #include "includes/mainwindow.h"
 #include <string>
 
+std::string getPath(std::string fullPath);
+
 int main(int argv, char **args)
 {
     QApplication app(argv, args);
@@ -66,9 +68,10 @@ int main(int argv, char **args)
     }
 
     MainWindow mainWindow;
-//    mainWindow.setTestText(argumentConcat);
+    //mainWindow.setTestText( getPath(argumentConcat) );
 
-    mainWindow.setTestText("E:\\EpicGame\\Projects\\Project1\\Game.rpgproject");
+
+    mainWindow.setTestText("E:\\EpicGame\\Projects\\Project1");
     mainWindow.show();
 
     CodeEditor editor;
@@ -78,3 +81,10 @@ int main(int argv, char **args)
     return app.exec();
 }
 
+std::string getPath(std::string fullPath)
+{
+    char *p = strrchr(fullPath.c_str(), '\\');
+    if(p) p[0] = 0;
+
+    return p;
+}
