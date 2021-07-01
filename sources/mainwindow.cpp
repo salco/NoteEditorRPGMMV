@@ -18,7 +18,6 @@ const char* const MainWindow::databaseCategorie[] = {
     "Items",
     "Skills",
     "States",
-    "System",
     "Tilesets",
     "Troops",
     "Weapons"
