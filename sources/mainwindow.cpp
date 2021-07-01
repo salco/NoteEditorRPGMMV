@@ -76,12 +76,38 @@ bool MainWindow::extractData(std::string fullPath)
             {
                 ui->comboBoxDataType->addItem(element);
             }
-
         }
 
+        for(auto element : databaseDynamicCategorie)
+        {
+            std::string concatTestPath = fullPath;
+            char buffer [50];
+            int n;
+            bool isElementDetected = false;
 
-        qDebug() << "found";
+            concatTestPath.append("\\").append(element).append("001").append(".json");
 
+            if( stat (concatTestPath.c_str(), &info) == 0 )
+            {
+                ui->comboBoxDataType->addItem(element);
+            }
+
+#if defined(PUT_THAT_ELSEWHERE)
+            do
+            {
+                n=sprintf (buffer, "%.3d",index);
+
+                concatTestPath.append("\\").append(element).append(".json");
+
+                isElementDetected = (stat (concatTestPath.c_str(), &info) == 0);
+                if( isElementDetected )
+                {
+                    ui->comboBoxDataType->addItem(element);
+                }
+
+            }while(isElementDetected);
+#endif
+        }
         return true;
     }
     return {};
