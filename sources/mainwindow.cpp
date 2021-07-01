@@ -7,7 +7,9 @@
 #include <algorithm>
 
 #include <QDebug>
+
 #include <QJsonParseError>
+ #include <QJsonObject>
 
 const char* const MainWindow::databaseCategorie[] = {
     "Actors",
@@ -230,5 +232,66 @@ bool MainWindow::extractContextFromJsonFile(const std::string &fullPath, QJsonDo
         return true;
     }
     return false;
+}
+
+#include <QJsonArray>
+
+void MainWindow::on_pushButtonSave_released()
+{
+    QJsonParseError jsonError;
+    QJsonDocument originalFile;
+
+    QJsonDocument flowerJson = QJsonDocument::fromJson(ui->plainTextEdit->toPlainText().toStdString().c_str(),&jsonError);
+    if (jsonError.error != QJsonParseError::NoError)
+    {
+        qDebug() << "ERROR:" << jsonError.errorString();
+    }
+
+    auto result = extractContextFromJsonFile(fileFullPath, originalFile);
+
+    if(result)
+    {
+        std::string fileTestPath = projectPath;
+        fileTestPath
+            .append("\\")
+            .append("testFile")
+            .append(".json");
+
+        //qDebug() << "avant: " << originalFile;
+
+        //qDebug() << "";
+        auto arrayJson = originalFile.array();
+        auto originalValue = arrayJson.at(9).toObject();
+
+
+        originalValue["note"] = "\n<Sideview Shadow Width: 150%>\n<Scale Sprite: 123%>\n\n<Weapon Image: 27>";
+
+        arrayJson.replace(9,originalValue);
+        originalFile.setArray( arrayJson);
+        //qDebug() << "apres: " << originalFile;
+
+        auto newFile = originalFile.toVariant().toList()[9].toJsonDocument();
+
+        file.setFileName(fileTestPath.c_str());
+        if (file.open(QFile::WriteOnly|QFile::Text))
+        {
+            //file.write( originalFile.toJson(QJsonDocument::JsonFormat::Compact));
+
+            file.write("[\r\n");
+
+            for(int index = 0; index < originalFile.array().count(); index++)
+            {
+                file.write(
+                QJsonDocument(originalFile[index].toObject()).toJson(QJsonDocument::JsonFormat::Compact)
+                        );
+                file.write("\r\n");
+            }
+            file.write("]\r\n");
+            //qDebug() << QJsonDocument(originalFile[1].toObject()).toJson(QJsonDocument::JsonFormat::Compact);
+            //file.write( .toStdString().c_str());
+            file.close();
+        }
+
+    }
 }
 

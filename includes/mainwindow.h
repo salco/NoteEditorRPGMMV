@@ -27,6 +27,8 @@ private slots:
 
     void on_comboBoxContext_currentIndexChanged(int index);
 
+    void on_pushButtonSave_released();
+
 private:
     Ui::MainWindow *ui;
     QFileSystemModel fileSystemModel;
