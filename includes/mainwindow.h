@@ -36,5 +36,6 @@ private:
     QFile file;
 
     bool extractData(std::string fullPath);
+    void updateContextComboBox(const std::string &categorie, QJsonDocument &contextData);
 };
 

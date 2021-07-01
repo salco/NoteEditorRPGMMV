@@ -4,6 +4,7 @@
 #include <cstring>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <algorithm>
 
 #include <QDebug>
 #include <QJsonParseError>
@@ -131,10 +132,19 @@ void MainWindow::on_comboBoxDataType_currentIndexChanged(int index)
 
     QJsonParseError jsonError;
     QJsonDocument flowerJson = QJsonDocument::fromJson(file.readAll(),&jsonError);
-    if (jsonError.error != QJsonParseError::NoError){
-    qDebug() << "ERROR:" << jsonError.errorString();
+    file.close();
+
+    if (jsonError.error != QJsonParseError::NoError)
+    {
+        qDebug() << "ERROR:" << jsonError.errorString();
     }
-    QList<QVariant> list = flowerJson.toVariant().toList();
+    else
+    {
+        updateContextComboBox(ui->comboBoxDataType->currentText().toStdString(), flowerJson);
+    }
+
+
+
 
     for(int index = 0; index < list.count(); index++)
     {
@@ -145,3 +155,33 @@ void MainWindow::on_comboBoxDataType_currentIndexChanged(int index)
     file.close();
 }
 
+
+void MainWindow::updateContextComboBox(const std::string &categorie, QJsonDocument &contextData)
+{
+    constexpr uint8_t maximumCaracterLenght = 100;
+    constexpr auto elementTypeToDisplay = "name";
+    auto resultSearch =
+            std::find (std::begin(databaseCategorie), std::end(databaseCategorie), categorie);
+
+    if(resultSearch != std::end(databaseCategorie))
+    {
+        qDebug() << "categorie found:" << *resultSearch;
+        ui->comboBoxContext->setEnabled(false);
+        ui->comboBoxContext->clear();
+
+        QList<QVariant> listFromContextFile = contextData.toVariant().toList();
+
+        char buffer [maximumCaracterLenght];
+        for(int index = 0; index < listFromContextFile.count(); index++)
+        {
+            sprintf (buffer, "%.4d %s",
+                     index,
+                     listFromContextFile[index]
+                        .toMap()[elementTypeToDisplay].toString().toStdString().c_str()
+                     );
+            ui->comboBoxContext->addItem(buffer);
+        }
+
+        ui->comboBoxContext->setEnabled(true);
+    }
+}
