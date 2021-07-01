@@ -6,6 +6,7 @@
 #include <sys/stat.h>
 
 #include <QDebug>
+#include <QJsonParseError>
 
 const char* const MainWindow::databaseCategorie[] = {
     "Actors",
@@ -32,6 +33,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    projectPath={};
 
 
 //        fileSystemModel.setOption(QFileSystemModel::DontUseCustomDirectoryIcons);
@@ -67,9 +69,11 @@ bool MainWindow::extractData(std::string fullPath)
 
     if (stat(fullPath.c_str(), &info) == 0 && S_ISDIR(info.st_mode))
     {
+        projectPath = fullPath;
+
         for(auto element : databaseCategorie)
         {
-            std::string concatTestPath = fullPath;
+            std::string concatTestPath = projectPath;
             concatTestPath.append("\\").append(element).append(".json");
 
             if( stat (concatTestPath.c_str(), &info) == 0 )
@@ -80,7 +84,7 @@ bool MainWindow::extractData(std::string fullPath)
 
         for(auto element : databaseDynamicCategorie)
         {
-            std::string concatTestPath = fullPath;
+            std::string concatTestPath = projectPath;
             char buffer [50];
             int n;
             bool isElementDetected = false;
@@ -117,5 +121,28 @@ void MainWindow::on_comboBoxDataType_currentIndexChanged(int index)
 {
     qDebug() << ui->comboBoxDataType->currentText();
 
+    std::string fileFullPath = projectPath;
+    fileFullPath
+        .append("\\")
+        .append(ui->comboBoxDataType->currentText().toStdString())
+        .append(".json");
+
+    file.setFileName(fileFullPath.c_str());
+    file.open(QIODevice::ReadOnly | QIODevice::Text);
+
+    QJsonParseError jsonError;
+    QJsonDocument flowerJson = QJsonDocument::fromJson(file.readAll(),&jsonError);
+    if (jsonError.error != QJsonParseError::NoError){
+    qDebug() << "ERROR:" << jsonError.errorString();
+    }
+    QList<QVariant> list = flowerJson.toVariant().toList();
+
+    for(int index = 0; index < list.count(); index++)
+    {
+        QMap<QString, QVariant> map = list[index].toMap();
+        qDebug() << "test: "<< map["name"].toString();
+    }
+
+    file.close();
 }
 

@@ -32,6 +32,9 @@ private:
     static const char* const databaseCategorie[] ;
     static const char* const databaseDynamicCategorie[] ;
 
+    std::string projectPath;
+    QFile file;
+
     bool extractData(std::string fullPath);
 };
 
