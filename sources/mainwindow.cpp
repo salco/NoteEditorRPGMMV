@@ -120,7 +120,7 @@ bool MainWindow::extractData(std::string fullPath)
 
 void MainWindow::on_comboBoxDataType_currentIndexChanged(int index)
 {
-    qDebug() << ui->comboBoxDataType->currentText();
+//    qDebug() << ui->comboBoxDataType->currentText();
 
     std::string fileFullPath = projectPath;
     fileFullPath
@@ -146,6 +146,7 @@ void MainWindow::on_comboBoxDataType_currentIndexChanged(int index)
 
 
 
+#if defined(TODISPLACE)
 
     for(int index = 0; index < list.count(); index++)
     {
@@ -153,7 +154,18 @@ void MainWindow::on_comboBoxDataType_currentIndexChanged(int index)
         qDebug() << "test: "<< map["name"].toString();
     }
 
-    file.close();
+        qDebug() << "test:"  << flowerJson.toVariant().toList()[9].toMap()["name"].toString();
+    ui->plainTextEdit->setPlainText(flowerJson.toVariant().toList()[9].toMap()["note"].toString());
+
+
+
+    //TODO set le CurrentFileEdited comme variable de class
+    //TODO ajouter le id ("%.4d %s", id, name) dans le 2eme radio group
+
+    //TODO faire en sorte que une fois on selectione le bon context on ouvre le truc dans l'ide
+    //TODO voir pour le bon  JsonFormat a ledit et apres
+#endif
+
 }
 
 
