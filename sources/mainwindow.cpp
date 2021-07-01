@@ -112,3 +112,10 @@ bool MainWindow::extractData(std::string fullPath)
     }
     return {};
 }
+
+void MainWindow::on_comboBoxDataType_currentIndexChanged(int index)
+{
+    qDebug() << ui->comboBoxDataType->currentText();
+
+}
+

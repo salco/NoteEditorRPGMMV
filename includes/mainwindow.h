@@ -22,6 +22,9 @@ public:
     ~MainWindow();
     void setProjectPath(std::string text);
 
+private slots:
+    void on_comboBoxDataType_currentIndexChanged(int index);
+
 private:
     Ui::MainWindow *ui;
     QFileSystemModel fileSystemModel;
