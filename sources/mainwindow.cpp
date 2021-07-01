@@ -11,7 +11,6 @@
 
 const char* const MainWindow::databaseCategorie[] = {
     "Actors",
-    "Animations",
     "Armors",
     "Classes",
     "CommonEvents",
@@ -33,7 +32,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    projectPath={};
+    projectPath.clear();
+    fileFullPath.clear();
 
 
 //        fileSystemModel.setOption(QFileSystemModel::DontUseCustomDirectoryIcons);
@@ -51,7 +51,7 @@ void MainWindow::setProjectPath(std::string text)
 {
 
     text.append("\\data");
-    auto result = extractData(text);
+    auto result = extractDataCategories(text);
 
     if(result)
     {
@@ -63,7 +63,7 @@ void MainWindow::setProjectPath(std::string text)
 
 }
 
-bool MainWindow::extractData(std::string fullPath)
+bool MainWindow::extractDataCategories(std::string fullPath)
 {
     struct stat info;
     constexpr uint8_t maxFileNameLenght = 50;
@@ -120,29 +120,21 @@ bool MainWindow::extractData(std::string fullPath)
 
 void MainWindow::on_comboBoxDataType_currentIndexChanged(int index)
 {
-//    qDebug() << ui->comboBoxDataType->currentText();
+    QJsonDocument flowerJson;
 
-    std::string fileFullPath = projectPath;
+    fileFullPath = projectPath;
     fileFullPath
         .append("\\")
         .append(ui->comboBoxDataType->currentText().toStdString())
         .append(".json");
 
-    file.setFileName(fileFullPath.c_str());
-    file.open(QIODevice::ReadOnly | QIODevice::Text);
+    auto result = extractContextFromJsonFile(fileFullPath, flowerJson);
 
-    QJsonParseError jsonError;
-    QJsonDocument flowerJson = QJsonDocument::fromJson(file.readAll(),&jsonError);
-    file.close();
-
-    if (jsonError.error != QJsonParseError::NoError)
-    {
-        qDebug() << "ERROR:" << jsonError.errorString();
-    }
-    else
+    if(result)
     {
         updateContextComboBox(ui->comboBoxDataType->currentText().toStdString(), flowerJson);
     }
+}
 
 
 
@@ -156,18 +148,14 @@ void MainWindow::on_comboBoxDataType_currentIndexChanged(int index)
 
         qDebug() << "test:"  << flowerJson.toVariant().toList()[9].toMap()["name"].toString();
     ui->plainTextEdit->setPlainText(flowerJson.toVariant().toList()[9].toMap()["note"].toString());
-
-
-
-    //TODO set le CurrentFileEdited comme variable de class
-    //TODO ajouter le id ("%.4d %s", id, name) dans le 2eme radio group
-
-    //TODO faire en sorte que une fois on selectione le bon context on ouvre le truc dans l'ide
-    //TODO voir pour le bon  JsonFormat a ledit et apres
 #endif
 
-}
 
+//TODO set le CurrentFileEdited comme variable de class
+//TODO ajouter le id ("%.4d %s", id, name) dans le 2eme radio group
+
+//TODO faire en sorte que une fois on selectione le bon context on ouvre le truc dans l'ide
+//TODO voir pour le bon  JsonFormat a ledit et apres
 
 void MainWindow::updateContextComboBox(const std::string &categorie, QJsonDocument &contextData)
 {
@@ -198,3 +186,49 @@ void MainWindow::updateContextComboBox(const std::string &categorie, QJsonDocume
         ui->comboBoxContext->setEnabled(true);
     }
 }
+
+void MainWindow::on_comboBoxContext_currentIndexChanged(int index)
+{
+    constexpr auto elementTypeToDisplay = "note";
+    QJsonDocument flowerJson;
+
+    if(index >= 0)
+    {
+        auto result = extractContextFromJsonFile(fileFullPath, flowerJson);
+
+        if(result)
+        {
+            auto contextMap = flowerJson.toVariant().toList()[index].toMap();
+            auto searchForData = contextMap.find(elementTypeToDisplay);
+
+            ui->plainTextEdit->clear();
+
+            if(searchForData != contextMap.end())
+            {
+                ui->plainTextEdit->setPlainText(searchForData->toString());
+            }
+        }
+    }
+}
+
+bool MainWindow::extractContextFromJsonFile(const std::string &fullPath, QJsonDocument& data)
+{
+    file.setFileName(fileFullPath.c_str());
+    file.open(QIODevice::ReadOnly | QIODevice::Text);
+
+    QJsonParseError jsonError;
+    QJsonDocument flowerJson = QJsonDocument::fromJson(file.readAll(),&jsonError);
+    file.close();
+
+    if (jsonError.error != QJsonParseError::NoError)
+    {
+        qDebug() << "ERROR:" << jsonError.errorString();
+    }
+    else
+    {
+        data = flowerJson;
+        return true;
+    }
+    return false;
+}
+

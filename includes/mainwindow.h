@@ -25,6 +25,8 @@ public:
 private slots:
     void on_comboBoxDataType_currentIndexChanged(int index);
 
+    void on_comboBoxContext_currentIndexChanged(int index);
+
 private:
     Ui::MainWindow *ui;
     QFileSystemModel fileSystemModel;
@@ -33,9 +35,19 @@ private:
     static const char* const databaseDynamicCategorie[] ;
 
     std::string projectPath;
+    std::string fileFullPath;
     QFile file;
 
-    bool extractData(std::string fullPath);
+    bool extractDataCategories(std::string fullPath);
     void updateContextComboBox(const std::string &categorie, QJsonDocument &contextData);
+
+    /**
+     * @brief extract info from JsonFile in QT object
+     * @param [in] fullPath the full path to extract the json data
+     * @param [out] data will set info if reading succeed
+     * @return true on succeed
+     */
+    bool extractContextFromJsonFile(const std::string &fullPath, QJsonDocument& data);
+
 };
 
