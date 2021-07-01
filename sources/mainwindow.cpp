@@ -66,6 +66,7 @@ void MainWindow::setProjectPath(std::string text)
 bool MainWindow::extractData(std::string fullPath)
 {
     struct stat info;
+    constexpr uint8_t maxFileNameLenght = 50;
 
     if (stat(fullPath.c_str(), &info) == 0 && S_ISDIR(info.st_mode))
     {
@@ -85,7 +86,7 @@ bool MainWindow::extractData(std::string fullPath)
         for(auto element : databaseDynamicCategorie)
         {
             std::string concatTestPath = projectPath;
-            char buffer [50];
+            char buffer [maxFileNameLenght];
             int n;
             bool isElementDetected = false;
 
