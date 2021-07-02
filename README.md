@@ -28,6 +28,8 @@ It use Qt6 and CMake, I try to only use QT for the UI stuff and the rest should 
 - Automate the build
 - Use c++ 17
 
+![lookOfIDE](doc/images/demoui.png)
+
 # Refference
 Image took for the logo is from [rohon777](https://favpng.com/png_view/rook-american-crow-drawing-of-family-png/PXUsxkMi)
  how to install, for now follow here: https://forums.rpgmakerweb.com/index.php?threads/adding-your-own-tools-to-rpg-maker-mv.86920/
