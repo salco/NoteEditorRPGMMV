@@ -271,19 +271,19 @@ void MainWindow::on_pushButtonSave_released()
 
         //qDebug() << "";
         auto arrayJson = originalFile.array();
-        auto originalValue = arrayJson.at(9).toObject();
 
 
-        originalValue["note"] = "\n<Sideview Shadow Width: 150%>\n<Scale Sprite: 123%>\n\n<Weapon Image: 27>";
+        if(not originalFile.array().at( ui->comboBoxContext->currentIndex() ).isNull())
+        {
+            auto originalValue = arrayJson.at(ui->comboBoxContext->currentIndex()).toObject();
 
-        arrayJson.replace(9,originalValue);
-        originalFile.setArray( arrayJson);
-        //qDebug() << "apres: " << originalFile;
+            originalValue["note"] = ui->plainTextEdit->toPlainText().toStdString().c_str();
+            arrayJson.replace(ui->comboBoxContext->currentIndex(), originalValue);
+            originalFile.setArray( arrayJson);
 
-        auto newFile = originalFile.toVariant().toList()[9].toJsonDocument();
+            saveJsonData(fileTestPath,originalFile);
 
-
-        saveJsonData(fileTestPath,originalFile);
+        }
     }
 }
 
@@ -292,7 +292,14 @@ bool MainWindow::saveJsonData(const std::string &fullPath, QJsonDocument& data)
     bool result = false;
     auto arrayJson = data.array();
 
+    //small backup
+    std::string backupFileName = fullPath.c_str();
+    backupFileName.append(".backup");
+    file.setFileName(backupFileName.c_str());
+    file.remove();
+    file.copy(fullPath.c_str(), backupFileName.c_str());
     file.setFileName(fullPath.c_str());
+
     if (file.open(QFile::WriteOnly|QFile::Text))
     {
         file.write("[\n");
