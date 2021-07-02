@@ -277,16 +277,29 @@ void MainWindow::on_pushButtonSave_released()
         {
             //file.write( originalFile.toJson(QJsonDocument::JsonFormat::Compact));
 
-            file.write("[\r\n");
+            file.write("[\n");
 
             for(int index = 0; index < originalFile.array().count(); index++)
             {
-                file.write(
-                QJsonDocument(originalFile[index].toObject()).toJson(QJsonDocument::JsonFormat::Compact)
-                        );
-                file.write("\r\n");
+                auto jsonDoc = QJsonDocument(originalFile[index].toObject());
+
+                if(originalFile.array().at(index).isNull())
+                {
+                    file.write("null");
+                }
+                else
+                {
+                    file.write(
+                        jsonDoc.toJson(QJsonDocument::JsonFormat::Compact)
+                    );
+                }
+                if(index+1 < originalFile.array().count())
+                {
+                    file.write(",");
+                }
+                file.write("\n");
             }
-            file.write("]\r\n");
+            file.write("]\n");
             //qDebug() << QJsonDocument(originalFile[1].toObject()).toJson(QJsonDocument::JsonFormat::Compact);
             //file.write( .toStdString().c_str());
             file.close();
