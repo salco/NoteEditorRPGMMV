@@ -68,15 +68,14 @@ int main(int argv, char **args)
     }
 
     MainWindow mainWindow;
-    //mainWindow.setProjectPath( getPath(argumentConcat) );
-
+#if !defined(TEST_OUT_OF_FILE)
+    mainWindow.setProjectPath( getPath(argumentConcat) );
+#else
+    mainWindow.setProjectPath("SOME_PATH_STATIC");
+#endif
     mainWindow.setWindowTitle(QObject::tr("Note Editor RPGMaker"));
-    mainWindow.setProjectPath("E:\\EpicGame\\Projects\\Project1");
-    mainWindow.show();
 
-    CodeEditor editor;
-    editor.setWindowTitle(QObject::tr("Code Editor Example"));
-//    editor.show();
+    mainWindow.show();
 
     return app.exec();
 }
