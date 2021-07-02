@@ -68,10 +68,13 @@ int main(int argv, char **args)
     }
 
     MainWindow mainWindow;
+
 #if !defined(TEST_OUT_OF_FILE)
-    mainWindow.setProjectPath( getPath(argumentConcat) );
+    auto stripedPath = getPath(argumentConcat);
+    mainWindow.setProjectPath( (stripedPath.empty() ? argumentConcat : stripedPath) );
+
 #else
-    mainWindow.setProjectPath("SOME_PATH_STATIC");
+    mainWindow.setProjectPath("SPECIFIC_PATH_HERE");
 #endif
     mainWindow.setWindowTitle(QObject::tr("Note Editor RPGMaker"));
 
@@ -83,7 +86,12 @@ int main(int argv, char **args)
 std::string getPath(std::string fullPath)
 {
     char *p = strrchr(fullPath.c_str(), '\\');
-    if(p) p[0] = 0;
+    if(p)
+    {
+        //p[0] = 0;
 
-    return p;
+        auto posFound = fullPath.find(p);
+        fullPath.erase((posFound));
+    }
+    return fullPath;
 }

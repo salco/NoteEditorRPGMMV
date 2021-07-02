@@ -316,3 +316,8 @@ bool MainWindow::backupJsonFile(const std::string &fullPath)
 
     return result;
 }
+
+void MainWindow::debugShowData(std::string data)
+{
+    ui->textEdit->setPlainText(data.c_str());
+}

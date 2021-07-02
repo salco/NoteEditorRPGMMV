@@ -24,6 +24,7 @@ public:
     ~MainWindow();
     void setProjectPath(std::string text);
     void save();
+    void debugShowData(std::string data);
 
 private slots:
     void on_comboBoxDataType_currentIndexChanged(int index);
