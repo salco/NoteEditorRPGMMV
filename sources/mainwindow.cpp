@@ -272,39 +272,46 @@ void MainWindow::on_pushButtonSave_released()
 
         auto newFile = originalFile.toVariant().toList()[9].toJsonDocument();
 
-        file.setFileName(fileTestPath.c_str());
-        if (file.open(QFile::WriteOnly|QFile::Text))
-        {
-            //file.write( originalFile.toJson(QJsonDocument::JsonFormat::Compact));
 
-            file.write("[\n");
-
-            for(int index = 0; index < originalFile.array().count(); index++)
-            {
-                auto jsonDoc = QJsonDocument(originalFile[index].toObject());
-
-                if(originalFile.array().at(index).isNull())
-                {
-                    file.write("null");
-                }
-                else
-                {
-                    file.write(
-                        jsonDoc.toJson(QJsonDocument::JsonFormat::Compact)
-                    );
-                }
-                if(index+1 < originalFile.array().count())
-                {
-                    file.write(",");
-                }
-                file.write("\n");
-            }
-            file.write("]\n");
-            //qDebug() << QJsonDocument(originalFile[1].toObject()).toJson(QJsonDocument::JsonFormat::Compact);
-            //file.write( .toStdString().c_str());
-            file.close();
-        }
-
+        saveJsonData(fileTestPath,originalFile);
     }
+}
+
+bool MainWindow::saveJsonData(const std::string &fullPath, QJsonDocument& data)
+{
+    bool result = false;
+    auto arrayJson = data.array();
+
+    file.setFileName(fullPath.c_str());
+    if (file.open(QFile::WriteOnly|QFile::Text))
+    {
+        file.write("[\n");
+
+        for(int index = 0; index < arrayJson.count(); index++)
+        {
+            auto jsonDoc = QJsonDocument(data[index].toObject());
+
+            if(arrayJson.at(index).isNull())
+            {
+                file.write("null");
+            }
+            else
+            {
+                file.write(
+                    jsonDoc.toJson(QJsonDocument::JsonFormat::Compact)
+                );
+            }
+            if(index+1 < arrayJson.count())
+            {
+                file.write(",");
+            }
+            file.write("\n");
+        }
+        file.write("]\n");
+
+        file.close();
+        result = true;
+    }
+    return result;
 }
 

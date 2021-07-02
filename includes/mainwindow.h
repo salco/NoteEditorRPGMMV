@@ -51,5 +51,7 @@ private:
      */
     bool extractContextFromJsonFile(const std::string &fullPath, QJsonDocument& data);
 
+    bool saveJsonData(const std::string &fullPath, QJsonDocument& data);
+
 };
 
