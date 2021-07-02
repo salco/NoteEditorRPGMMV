@@ -10,6 +10,8 @@ It use Qt6 and CMake, I try to only use QT for the UI stuff and the rest should 
 # Usage
 > TODO: make another markdown under "doc/" and explain stuff
 
+1. You can take the already packaged Tool from Release section
+1. Build yourself by following info [here](doc/Packaging.md)
 
 # What is do
 - Can be added to the RPGMaker tools
