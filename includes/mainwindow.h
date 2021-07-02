@@ -8,6 +8,7 @@
 #include <QTextBlock>
 #include <QFileSystemModel>
 
+
 #include <string>
 
 namespace Ui {
@@ -22,6 +23,7 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void setProjectPath(std::string text);
+    void save();
 
 private slots:
     void on_comboBoxDataType_currentIndexChanged(int index);
@@ -37,10 +39,13 @@ private:
 
     static const char* const databaseCategorie[] ;
     static const char* const databaseDynamicCategorie[] ;
+    static const char tabSpaceNumber = 4;
 
     std::string projectPath;
     std::string fileFullPath;
     QFile file;
+    QAction* actionTest;
+
 
     bool extractDataCategories(std::string fullPath);
     void updateContextComboBox(const std::string &categorie, QJsonDocument &contextData);
@@ -54,6 +59,9 @@ private:
     bool extractContextFromJsonFile(const std::string &fullPath, QJsonDocument& data);
 
     bool saveJsonData(const std::string &fullPath, QJsonDocument& data);
+    bool backupJsonFile(const std::string &fullPath);
+
+    void replaceAll(std::string& str, const std::string& from, const std::string& to);
 
 };
 

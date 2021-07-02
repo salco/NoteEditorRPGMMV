@@ -9,7 +9,8 @@
 #include <QDebug>
 
 #include <QJsonParseError>
- #include <QJsonObject>
+#include <QJsonObject>
+#include <QJsonArray>
 
 const char* const MainWindow::databaseCategorie[] = {
     "Actors",
@@ -29,7 +30,8 @@ const char* const MainWindow::databaseDynamicCategorie[] = {
     "Map"
 };
 #include <QFontMetricsF>
-
+#include <QKeySequence>
+#include <QAction>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -46,17 +48,68 @@ MainWindow::MainWindow(QWidget *parent) :
     fileSystemModel.setNameFilters({"*.json"});
 
     ui->plainTextEdit->setTabStopDistance(
-        QFontMetricsF(ui->plainTextEdit->font()).horizontalAdvance(' ') * 4);
+        QFontMetricsF(ui->plainTextEdit->font()).horizontalAdvance(' ') * tabSpaceNumber);
   //  QTextCharFormat testFormat = ui->plainTextEdit->currentCharFormat();
     //testFormat.setFontUnderline(true);
     //ui->plainTextEdit->setCurrentCharFormat(testFormat);
 
     highlighter = new rpgNoteHighlighter(ui->plainTextEdit->document());
+    actionTest = new QAction(this);
+    actionTest->setShortcut(QKeySequence::Save);
+
+    connect(actionTest, &QAction::triggered,
+                     this, &MainWindow::save);
+    ui->plainTextEdit->addAction(actionTest);
+
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete actionTest;
+
+}
+
+void MainWindow::save()
+{
+    qDebug() << "Saving";
+    QJsonParseError jsonError;
+    QJsonDocument originalFile;
+
+    QJsonDocument flowerJson = QJsonDocument::fromJson(ui->plainTextEdit->toPlainText().toStdString().c_str(),&jsonError);
+    if (jsonError.error != QJsonParseError::NoError)
+    {
+        qDebug() << "ERROR:" << jsonError.errorString();
+    }
+
+    auto result = extractContextFromJsonFile(fileFullPath, originalFile);
+
+    if(result)
+    {
+        std::string fileTestPath = projectPath;
+        fileTestPath
+            .append("\\")
+            .append("testFile")
+            .append(".json");
+
+        auto arrayJson = originalFile.array();
+
+
+        if(not originalFile.array().at( ui->comboBoxContext->currentIndex() ).isNull())
+        {
+            auto originalValue = arrayJson.at(ui->comboBoxContext->currentIndex()).toObject();
+
+            std::string formatedData = ui->plainTextEdit->toPlainText().toStdString();
+            replaceAll(formatedData,"\t", std::string(tabSpaceNumber, ' '));
+
+            originalValue["note"] = formatedData.c_str();
+            arrayJson.replace(ui->comboBoxContext->currentIndex(), originalValue);
+            originalFile.setArray( arrayJson);
+
+            saveJsonData(fileTestPath,originalFile);
+
+        }
+    }
 }
 
 void MainWindow::setProjectPath(std::string text)
@@ -108,22 +161,6 @@ bool MainWindow::extractDataCategories(std::string fullPath)
             {
                 ui->comboBoxDataType->addItem(element);
             }
-
-#if defined(PUT_THAT_ELSEWHERE)
-            do
-            {
-                n=sprintf (buffer, "%.3d",index);
-
-                concatTestPath.append("\\").append(element).append(".json");
-
-                isElementDetected = (stat (concatTestPath.c_str(), &info) == 0);
-                if( isElementDetected )
-                {
-                    ui->comboBoxDataType->addItem(element);
-                }
-
-            }while(isElementDetected);
-#endif
         }
         return true;
     }
@@ -147,27 +184,6 @@ void MainWindow::on_comboBoxDataType_currentIndexChanged(int index)
         updateContextComboBox(ui->comboBoxDataType->currentText().toStdString(), flowerJson);
     }
 }
-
-
-
-#if defined(TODISPLACE)
-
-    for(int index = 0; index < list.count(); index++)
-    {
-        QMap<QString, QVariant> map = list[index].toMap();
-        qDebug() << "test: "<< map["name"].toString();
-    }
-
-        qDebug() << "test:"  << flowerJson.toVariant().toList()[9].toMap()["name"].toString();
-    ui->plainTextEdit->setPlainText(flowerJson.toVariant().toList()[9].toMap()["note"].toString());
-#endif
-
-
-//TODO set le CurrentFileEdited comme variable de class
-//TODO ajouter le id ("%.4d %s", id, name) dans le 2eme radio group
-
-//TODO faire en sorte que une fois on selectione le bon context on ouvre le truc dans l'ide
-//TODO voir pour le bon  JsonFormat a ledit et apres
 
 void MainWindow::updateContextComboBox(const std::string &categorie, QJsonDocument &contextData)
 {
@@ -244,47 +260,9 @@ bool MainWindow::extractContextFromJsonFile(const std::string &fullPath, QJsonDo
     return false;
 }
 
-#include <QJsonArray>
-
 void MainWindow::on_pushButtonSave_released()
 {
-    QJsonParseError jsonError;
-    QJsonDocument originalFile;
-
-    QJsonDocument flowerJson = QJsonDocument::fromJson(ui->plainTextEdit->toPlainText().toStdString().c_str(),&jsonError);
-    if (jsonError.error != QJsonParseError::NoError)
-    {
-        qDebug() << "ERROR:" << jsonError.errorString();
-    }
-
-    auto result = extractContextFromJsonFile(fileFullPath, originalFile);
-
-    if(result)
-    {
-        std::string fileTestPath = projectPath;
-        fileTestPath
-            .append("\\")
-            .append("testFile")
-            .append(".json");
-
-        //qDebug() << "avant: " << originalFile;
-
-        //qDebug() << "";
-        auto arrayJson = originalFile.array();
-
-
-        if(not originalFile.array().at( ui->comboBoxContext->currentIndex() ).isNull())
-        {
-            auto originalValue = arrayJson.at(ui->comboBoxContext->currentIndex()).toObject();
-
-            originalValue["note"] = ui->plainTextEdit->toPlainText().toStdString().c_str();
-            arrayJson.replace(ui->comboBoxContext->currentIndex(), originalValue);
-            originalFile.setArray( arrayJson);
-
-            saveJsonData(fileTestPath,originalFile);
-
-        }
-    }
+    save();
 }
 
 bool MainWindow::saveJsonData(const std::string &fullPath, QJsonDocument& data)
@@ -293,11 +271,7 @@ bool MainWindow::saveJsonData(const std::string &fullPath, QJsonDocument& data)
     auto arrayJson = data.array();
 
     //small backup
-    std::string backupFileName = fullPath.c_str();
-    backupFileName.append(".backup");
-    file.setFileName(backupFileName.c_str());
-    file.remove();
-    file.copy(fullPath.c_str(), backupFileName.c_str());
+    backupJsonFile(fullPath);
     file.setFileName(fullPath.c_str());
 
     if (file.open(QFile::WriteOnly|QFile::Text))
@@ -329,6 +303,28 @@ bool MainWindow::saveJsonData(const std::string &fullPath, QJsonDocument& data)
         file.close();
         result = true;
     }
+    return result;
+}
+
+void MainWindow::replaceAll(std::string& str, const std::string& from, const std::string& to) {
+    if(from.empty())
+        return;
+    size_t start_pos = 0;
+    while((start_pos = str.find(from, start_pos)) != std::string::npos) {
+        str.replace(start_pos, from.length(), to);
+        start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
+    }
+}
+
+bool MainWindow::backupJsonFile(const std::string &fullPath)
+{
+    bool result = false;
+    std::string backupFileName = fullPath.c_str();
+    backupFileName.append(".backup");
+    file.setFileName(backupFileName.c_str());
+    file.remove();
+    result = file.copy(fullPath.c_str(), backupFileName.c_str());
+
     return result;
 }
 
