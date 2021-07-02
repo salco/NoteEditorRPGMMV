@@ -38,6 +38,8 @@ find_package(Qt${QT_VERSION} COMPONENTS
 
 qt_wrap_ui(${${PROJECT_NAME}_UI} ${${PROJECT_NAME}_UI})
 
+qt_add_resources(RESOURCES composer.qrc)
+
 qt_add_executable(${PROJECT_NAME}
     sources/codeeditor.cpp
     includes/codeeditor.h
@@ -47,6 +49,7 @@ qt_add_executable(${PROJECT_NAME}
     includes/rpgNoteHighlighter.h
     ${${PROJECT_NAME}_UI}
     main.cpp
+    ${RESOURCES}
 )
 
 

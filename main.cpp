@@ -60,7 +60,7 @@ int main(int argv, char **args)
 {
     QApplication app(argv, args);
     std::string argumentConcat;
-
+    app.setWindowIcon(QIcon(":/images/ui/crow_01.png"));
 
     for (int i = 1; i < argv; ++i)
     {
@@ -70,7 +70,7 @@ int main(int argv, char **args)
     MainWindow mainWindow;
     //mainWindow.setProjectPath( getPath(argumentConcat) );
 
-
+    mainWindow.setWindowTitle(QObject::tr("Note Editor RPGMaker"));
     mainWindow.setProjectPath("E:\\EpicGame\\Projects\\Project1");
     mainWindow.show();
 

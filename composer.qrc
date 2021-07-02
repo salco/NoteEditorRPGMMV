@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>ui/crow_01.png</file>
+    </qresource>
+</RCC>

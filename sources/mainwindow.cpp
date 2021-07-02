@@ -41,17 +41,10 @@ MainWindow::MainWindow(QWidget *parent) :
     projectPath.clear();
     fileFullPath.clear();
 
-
-//        fileSystemModel.setOption(QFileSystemModel::DontUseCustomDirectoryIcons);
-//        fileSystemModel.setOption(QFileSystemModel::DontWatchForChanges);
-
     fileSystemModel.setNameFilters({"*.json"});
 
     ui->plainTextEdit->setTabStopDistance(
         QFontMetricsF(ui->plainTextEdit->font()).horizontalAdvance(' ') * tabSpaceNumber);
-  //  QTextCharFormat testFormat = ui->plainTextEdit->currentCharFormat();
-    //testFormat.setFontUnderline(true);
-    //ui->plainTextEdit->setCurrentCharFormat(testFormat);
 
     highlighter = new rpgNoteHighlighter(ui->plainTextEdit->document());
     actionTest = new QAction(this);
@@ -67,33 +60,30 @@ MainWindow::~MainWindow()
 {
     delete ui;
     delete actionTest;
+    delete highlighter;
 
 }
 
 void MainWindow::save()
 {
     qDebug() << "Saving";
-    QJsonParseError jsonError;
     QJsonDocument originalFile;
-
-    QJsonDocument flowerJson = QJsonDocument::fromJson(ui->plainTextEdit->toPlainText().toStdString().c_str(),&jsonError);
-    if (jsonError.error != QJsonParseError::NoError)
-    {
-        qDebug() << "ERROR:" << jsonError.errorString();
-    }
 
     auto result = extractContextFromJsonFile(fileFullPath, originalFile);
 
     if(result)
     {
+#if defined(TEST_OUT_OF_FILE)
         std::string fileTestPath = projectPath;
         fileTestPath
             .append("\\")
             .append("testFile")
             .append(".json");
+#else
+        std::string& fileTestPath = fileFullPath;
+#endif
 
         auto arrayJson = originalFile.array();
-
 
         if(not originalFile.array().at( ui->comboBoxContext->currentIndex() ).isNull())
         {
@@ -107,14 +97,12 @@ void MainWindow::save()
             originalFile.setArray( arrayJson);
 
             saveJsonData(fileTestPath,originalFile);
-
         }
     }
 }
 
 void MainWindow::setProjectPath(std::string text)
 {
-
     text.append("\\data");
     auto result = extractDataCategories(text);
 
@@ -248,11 +236,7 @@ bool MainWindow::extractContextFromJsonFile(const std::string &fullPath, QJsonDo
     QJsonDocument flowerJson = QJsonDocument::fromJson(file.readAll(),&jsonError);
     file.close();
 
-    if (jsonError.error != QJsonParseError::NoError)
-    {
-        qDebug() << "ERROR:" << jsonError.errorString();
-    }
-    else
+    if (jsonError.error == QJsonParseError::NoError)
     {
         data = flowerJson;
         return true;
