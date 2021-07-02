@@ -1,7 +1,10 @@
 # Generated from codeeditor.pro.
 
 cmake_minimum_required(VERSION 3.14)
-project(WindowBuilder LANGUAGES CXX)
+project(WindowBuilder
+    LANGUAGES CXX
+    VERSION 1.0.0
+    )
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -51,6 +54,11 @@ qt_add_executable(${PROJECT_NAME}
     main.cpp
     ${RESOURCES}
 )
+
+target_compile_definitions(${PROJECT_NAME}
+        PUBLIC
+    IDE_VERSION="${PROJECT_VERSION}"
+    )
 
 
 target_include_directories(${PROJECT_NAME}

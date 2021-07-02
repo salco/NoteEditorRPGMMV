@@ -54,6 +54,10 @@ MainWindow::MainWindow(QWidget *parent) :
                      this, &MainWindow::save);
     ui->plainTextEdit->addAction(actionTest);
 
+    labelWatermark = new QLabel(this);
+
+    labelWatermark->setText("Made by Salco | V:"  IDE_VERSION);
+    ui->statusbar->addPermanentWidget(labelWatermark);
 }
 
 MainWindow::~MainWindow()
@@ -61,6 +65,7 @@ MainWindow::~MainWindow()
     delete ui;
     delete actionTest;
     delete highlighter;
+    delete labelWatermark;
 
 }
 
@@ -311,4 +316,3 @@ bool MainWindow::backupJsonFile(const std::string &fullPath)
 
     return result;
 }
-

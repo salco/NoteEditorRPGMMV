@@ -7,7 +7,7 @@
 #include <QPainter>
 #include <QTextBlock>
 #include <QFileSystemModel>
-
+#include <QLabel>
 
 #include <string>
 
@@ -45,6 +45,7 @@ private:
     std::string fileFullPath;
     QFile file;
     QAction* actionTest;
+    QLabel* labelWatermark;
 
 
     bool extractDataCategories(std::string fullPath);
