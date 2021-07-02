@@ -43,6 +43,8 @@ qt_add_executable(${PROJECT_NAME}
     includes/codeeditor.h
     sources/mainwindow.cpp
     includes/mainwindow.h
+    sources/rpgNoteHighlighter.cpp
+    includes/rpgNoteHighlighter.h
     ${${PROJECT_NAME}_UI}
     main.cpp
 )

@@ -66,7 +66,11 @@
             <item row="2" column="0" colspan="2">
              <layout class="QGridLayout" name="gridLayout">
               <item row="0" column="0">
-               <widget class="CodeEditor" name="plainTextEdit"/>
+               <widget class="CodeEditor" name="plainTextEdit">
+                <property name="textInteractionFlags">
+                 <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextEditable|Qt::TextEditorInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+                </property>
+               </widget>
               </item>
              </layout>
             </item>

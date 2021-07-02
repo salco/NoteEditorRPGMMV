@@ -28,6 +28,8 @@ const char* const MainWindow::databaseCategorie[] = {
 const char* const MainWindow::databaseDynamicCategorie[] = {
     "Map"
 };
+#include <QFontMetricsF>
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -42,6 +44,14 @@ MainWindow::MainWindow(QWidget *parent) :
 //        fileSystemModel.setOption(QFileSystemModel::DontWatchForChanges);
 
     fileSystemModel.setNameFilters({"*.json"});
+
+    ui->plainTextEdit->setTabStopDistance(
+        QFontMetricsF(ui->plainTextEdit->font()).horizontalAdvance(' ') * 4);
+  //  QTextCharFormat testFormat = ui->plainTextEdit->currentCharFormat();
+    //testFormat.setFontUnderline(true);
+    //ui->plainTextEdit->setCurrentCharFormat(testFormat);
+
+    highlighter = new rpgNoteHighlighter(ui->plainTextEdit->document());
 }
 
 MainWindow::~MainWindow()

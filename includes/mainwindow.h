@@ -2,6 +2,7 @@
 
 #include <QMainWindow>
 #include "includes/codeeditor.h"
+#include "includes/rpgNoteHighlighter.h"
 
 #include <QPainter>
 #include <QTextBlock>
@@ -32,6 +33,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QFileSystemModel fileSystemModel;
+    rpgNoteHighlighter *highlighter;
 
     static const char* const databaseCategorie[] ;
     static const char* const databaseDynamicCategorie[] ;
